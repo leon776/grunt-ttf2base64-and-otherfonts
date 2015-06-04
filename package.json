@@ -1,0 +1,31 @@
+{
+  "name": "grunt-ttf2base64-and-otherfonts",
+  "version": "0.0.1",
+  "description": "grunt-ttf2base64-and-otherfonts",
+  "homepage": "https://github.com/leon776/grunt-ttf2base64-and-otherfonts",
+  "repository": "https://github.com/leon776/grunt-ttf2base64-and-otherfonts",
+  "author": {
+    "name": "xiaoweili",
+    "email": "archlichxw@gmail.com",
+    "url": "http://www.jnecw.com/"
+  },
+  "keywords": [
+    "gruntplugin"
+  ],
+  "main": "Gruntfile.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-contrib-nodeunit": "~0.3.0",
+    "jshint-stylish": "~0.1.5",
+    "load-grunt-tasks": "~0.3.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  }
+}
