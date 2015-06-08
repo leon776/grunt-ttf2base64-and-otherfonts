@@ -7,7 +7,7 @@ module.exports = function(grunt) {
     ttf2base64_and_otherfonts: {
       default: {
         files: [{
-          src : ['test/less/*.less']//要监听的css目录
+          src : ['test/less/ico.less']//要监听的css文件
         }],
         options: {
           dest: 'test/font'
