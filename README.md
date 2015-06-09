@@ -94,6 +94,6 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 2015-06-09: first release
-
+ 
 ## License
 Copyright (c) 2015 xiaoweili. Licensed under the MIT license.
