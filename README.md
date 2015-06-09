@@ -28,7 +28,7 @@ before:
     font-style: normal;
 }
 ```
-after
+after:
 ```css
 @font-face {
     font-family: 'icon';
