@@ -19,35 +19,57 @@ grunt.loadNpmTasks('grunt-ttf2base64-and-otherfonts');
 
 ## The "ttf2base64_and_otherfonts" task
 
+A simple plugin change ttf file to base64 code and other font files, then updata css like this:
+
+before:
+```css
+@font-face {
+    font-family: 'icon';
+    src: url('../font/icon.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+```
+after
+```css
+@font-face {
+    font-family: 'icon';
+    src: url('data:application/x-font-ttf;base64,WxhdG4ACAAEAAAAAP....') format('truetype'), 
+	url('../font/icon.ttf') format('truetype'), 
+	url('../font/icon.woff') format('woff'), 
+	url('../font/icon.eot') format('embedded-opentype'), 
+	url('../font/icon.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+```
+
+
 ### Overview
 In your project's Gruntfile, add a section named `ttf2base64_and_otherfonts` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
   ttf2base64_and_otherfonts: {
-    options: {
-      // Task-specific options go here.
-    },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
+    default: {
+      files: [{
+          src : ['test/less/ico.less']//要转换的css文件
+      }],
+      options: {
+          dest: 'test/font'//字体文件输出目录
+      }
+    }
   },
 })
 ```
 
 ### Options
 
-#### options.separator
+#### options.dest
 Type: `String`
 Default value: `',  '`
 
-A string value that is used to do something with whatever.
-
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
-
-A string value that is used to do something else with whatever else.
+A string value that is font file output dir.
 
 ### Usage Examples
 
@@ -57,27 +79,14 @@ In this example, the default options are used to do something with whatever. So 
 ```js
 grunt.initConfig({
   ttf2base64_and_otherfonts: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-})
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
-
-```js
-grunt.initConfig({
-  ttf2base64_and_otherfonts: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+    default: {
+      files: [{
+          src : ['test/less/ico.less']//要转换的css文件
+      }],
+      options: {
+          dest: 'test/font'//字体文件输出目录
+      }
+    }
   },
 })
 ```
