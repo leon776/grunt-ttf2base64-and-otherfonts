@@ -10,7 +10,7 @@ module.exports = function(grunt) {
           src : ['test/less/ico.less']//要监听的css文件
         }],
         options: {
-          dest: 'test/font'
+          dest: 'test/font'//字体文件读取/输出目录
         }
       }
     }

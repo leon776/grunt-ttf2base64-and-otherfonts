@@ -16,11 +16,10 @@ var ttf2woff = require('ttf2woff'),
     mime = require('mime');
 
 //转换ttf字体文件
-var transferTtf = function(ttfFile, dest) {
+var transferTtf = function(ttfFile, dest, oldSrc) {
   //variable
   var buffer = fs.readFileSync(dest + '/' + path.basename(ttfFile)),
     outputFileSrc = dest + '/' + path.basename(ttfFile, 'ttf'),
-    cssReplaceSrc = ttfFile.replace('ttf', ''),
     ttf = new Uint8Array(buffer),
     mimeType = mime.lookup(ttfFile);
 
@@ -28,17 +27,17 @@ var transferTtf = function(ttfFile, dest) {
   var _2woff = function() {
       var woff = new Buffer(ttf2woff(ttf).buffer);
       fs.writeFileSync(outputFileSrc + 'woff', woff);
-      return 'url(\'' + cssReplaceSrc + 'woff\') format(\'woff\')';
+      return oldSrc.replace('ttf', 'woff').replace('truetype', 'woff');
     },
     _2eot = function() {
       var eot = new Buffer(ttf2eot(ttf).buffer);
       fs.writeFileSync(outputFileSrc + 'eot', eot);
-      return 'url(\'' + cssReplaceSrc +  'eot\') format(\'embedded-opentype\')';
+      return oldSrc.replace('ttf', 'eot').replace('truetype', 'embedded-opentype');
     },
     _2svg = function() {
       var svg = new Buffer(ttf2svg(buffer));
       fs.writeFileSync(outputFileSrc + 'svg', svg);
-      return 'url(\'' + cssReplaceSrc + 'svg\') format(\'svg\')';
+      return oldSrc.replace('ttf', 'svg').replace('truetype', 'svg');
     },
     /**
      * Base64 encodes an image and builds the data URI string
@@ -73,7 +72,8 @@ var transferCss = function(src, options) {
 
   matches.forEach(function(src) {
     var fontSrc = src.replace(/\'/g,'').replace(/\"/g,'').replace('url(', '').replace(') format(truetype)', '');
-    var font = new transferTtf(fontSrc, options.dest);
+    console.log(src)
+    var font = new transferTtf(options.dest + '/' +path.basename(fontSrc), options.dest, src);
     content = content.replace(src,
       font.ttf2base64() + ', '
       + src + ', '
