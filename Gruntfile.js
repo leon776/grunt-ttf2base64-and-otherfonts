@@ -3,6 +3,21 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    jshint: {
+      all: [
+        'Gruntfile.js',
+        'tasks/*.js',
+        '<%= nodeunit.tests %>'
+      ],
+      options: {
+        jshintrc: '.jshintrc'
+      }
+    },
+
+    // Before generating any new files, remove any previously-created files.
+    clean: {
+      tests: ['test/less/*-base64.less', 'test/font/*.svg', 'test/font/*.woff', 'test/font/*.eot']
+    },
     // sample configuration
     ttf2base64_and_otherfonts: {
       default: {
@@ -13,13 +28,21 @@ module.exports = function(grunt) {
           dest: 'test/font'//字体文件读取/输出目录
         }
       }
+    },
+    // Unit tests.
+    nodeunit: {
+      tests: ['test/test*.js']
     }
   });
-
+  // These plugins provide necessary tasks.
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-nodeunit');
   // Load local tasks.
   grunt.loadTasks('tasks');
 
   // Default task.
   grunt.registerTask('default', 'ttf2base64_and_otherfonts');
+  grunt.registerTask('test', ['clean', 'default', 'nodeunit']);
 
 };
