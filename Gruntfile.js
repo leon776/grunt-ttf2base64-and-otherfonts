@@ -16,7 +16,7 @@ module.exports = function(grunt) {
 
     // Before generating any new files, remove any previously-created files.
     clean: {
-      tests: ['test/less/*-base64.less', 'test/font/*.svg', 'test/font/*.woff', 'test/font/*.eot']
+      tests: ['test/less/*base64*', 'test/font/*.svg', 'test/font/*.woff', 'test/font/*.eot']
     },
     // sample configuration
     ttf2base64_and_otherfonts: {
@@ -25,7 +25,8 @@ module.exports = function(grunt) {
           src : ['test/less/ico.less']//要监听的css文件
         }],
         options: {
-          dest: 'test/font'//字体文件读取/输出目录
+          dest: 'test/font',//字体文件读取&输出目录
+          transfer2base64type: ['ttf', 'eot', 'woff']
         }
       }
     },
@@ -42,7 +43,7 @@ module.exports = function(grunt) {
   grunt.loadTasks('tasks');
 
   // Default task.
-  grunt.registerTask('default', 'ttf2base64_and_otherfonts');
+  grunt.registerTask('default', ['clean', 'ttf2base64_and_otherfonts']);
   grunt.registerTask('test', ['clean', 'default', 'nodeunit']);
 
 };

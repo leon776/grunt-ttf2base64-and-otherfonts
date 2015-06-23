@@ -11,81 +11,95 @@ var ttf2woff = require('ttf2woff'),
     ttf2eot = require('ttf2eot'),
     ttf2svg = require('ttf2svg'),
     path = require('path'),
-    grunt = require('grunt'),
     fs = require('fs'),
-    mime = require('mime');
+    grunt = require('grunt'),
+    mime = require('mime'),
+    fontFormat = {
+      ttf: 'truetype',
+      woff: 'woff',
+      eot: 'embedded-opentype',
+      svg: 'svg'
+    };
 
 //转换ttf字体文件
 var transferTtf = function(ttfFile, dest, oldSrc) {
   //variable
   var buffer = fs.readFileSync(dest + '/' + path.basename(ttfFile)),
     outputFileSrc = dest + '/' + path.basename(ttfFile, 'ttf'),
-    ttf = new Uint8Array(buffer),
-    mimeType = mime.lookup(ttfFile);
+    ttf = new Uint8Array(buffer);
 
   //functions
   var _2woff = function() {
       var woff = new Buffer(ttf2woff(ttf).buffer);
       fs.writeFileSync(outputFileSrc + 'woff', woff);
-      return oldSrc.replace('ttf', 'woff').replace('truetype', 'woff');
+      return oldSrc.replace('ttf', 'woff').replace('truetype', fontFormat.woff);
     },
     _2eot = function() {
       var eot = new Buffer(ttf2eot(ttf).buffer);
       fs.writeFileSync(outputFileSrc + 'eot', eot);
-      return oldSrc.replace('ttf', 'eot').replace('truetype', 'embedded-opentype');
+      return oldSrc.replace('ttf', 'eot').replace('truetype', fontFormat.eot);
     },
     _2svg = function() {
       var svg = new Buffer(ttf2svg(buffer));
       fs.writeFileSync(outputFileSrc + 'svg', svg);
-      return oldSrc.replace('ttf', 'svg').replace('truetype', 'svg');
-    },
-    /**
-     * Base64 encodes an image and builds the data URI string
-     *
-     * @returns {string} base64 encoded string
-     */
-    _2base64 = function() {
-      var ret = 'data:';
-      ret += mimeType;
-      ret += ';base64,';
-      ret += buffer.toString('base64');
-      return 'url(\'' + ret + '\') format(\'truetype\')';
-    };
+      return oldSrc.replace('ttf', 'svg').replace('truetype', fontFormat.svg);
+    }
   return {
     ttf2woff: _2woff,
     ttf2eot: _2eot,
-    ttf2svg: _2svg,
-    ttf2base64: _2base64
+    ttf2svg: _2svg
   };
 };
+
+/**
+ * Base64 encodes an image and builds the data URI string
+ *
+ * @returns {string} base64 encoded string
+ */
+var fontFile2Base64 = function(filepath, format) {
+  var mimeType = mime.lookup(filepath);
+  var buffer = fs.readFileSync(filepath);
+  var ret = 'data:';
+  ret += mimeType;
+  ret += ';base64,';
+  ret += buffer.toString('base64');
+  return 'url(\'' + ret + '\') format(\''+ fontFormat[format] +'\')';
+};
+
 //转换css
 var transferCss = function(src, options) {
   var dir = path.dirname(src) + '/',
-    outputCss = dir + path.basename(src, path.extname(src)) + '-base64'+path.extname(src),
+    outputCss = dir + path.basename(src, path.extname(src)) + '!@!base64!@!' + path.extname(src),
     RE_CSS_URLFUNC = /(?:url\(["']?)(.*?)(?:(format\(['"]truetype['"]\))["']?)/mgi,
     content  = grunt.file.read(src),
-    matches = content.match(RE_CSS_URLFUNC);
+    matches = content.match(RE_CSS_URLFUNC),
+    fontSrc, font, format, i;
 
   matches = matches.filter(function(u) {
     return !u.match('(data:|http)');
   });
 
   matches.forEach(function(src) {
-    var fontSrc = src.replace(/\'/g,'').replace(/\"/g,'').replace('url(', '').replace(') format(truetype)', '');
-    console.log(src)
-    var font = new transferTtf(options.dest + '/' +path.basename(fontSrc), options.dest, src);
+    fontSrc = src.replace(/\'/g,'').replace(/\"/g,'').replace('url(', '').replace(') format(truetype)', '');
+    fontSrc = options.dest + '/' + path.basename(fontSrc);
+    font = new transferTtf(fontSrc, options.dest, src);
     content = content.replace(src,
-      font.ttf2base64() + ', '
+      '!@!base64code!@!, '
       + src + ', '
       + font.ttf2woff() + ', '
       + font.ttf2eot() + ', '
       + font.ttf2svg()
     );
   });
+  //fontFile2Base64(fontSrc)
+  //fontSrc = path.base
+  for(i in options.transfer2base64type) {
+    format = options.transfer2base64type[i];
+    fs.writeFileSync(outputCss.replace('!@!base64!@!', '_base64_' + format) ,
+      content.replace('!@!base64code!@!', fontFile2Base64(fontSrc.replace('ttf', format), format)));
+  }
 
-  fs.writeFileSync(outputCss , content);
-
-  return outputCss;
+  return 'base64_css_file';
 };
 module.exports = function (grunt) {
 
