@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TTF及各种文件转换工具</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script type="text/javascript" src="js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+    <style>
+        .hidden{position: absolute;left:-9999em;}
+        .warp{padding: 24px 24px 0;}
+        .warp .item{margin-bottom: 14px;}
+        label{display: inline-block; cursor: pointer;}
+        .upload-area{ position: relative; border: 2px dashed #ddd;width: 100%; height: 100px;line-height: 100px;text-align: center;box-sizing: border-box;}
+        .upload-area p, .upload-area .label-area{font-size: 14px;pointer-events: none}
+        .upload-area p{position: absolute;font-size: 14px; pointer-events: none;width: 100%;top: -19px;}
+        .upload-area .icon-plus{position: relative;top: 1px;}
+        .upload-area.on{border-color: #3a87ad;}
+        .upload-area .label-area{ position: absolute;left: 0;top: 50%;width: 100%; height: 16px;line-height: 16px;margin-top: -26px}
+        .upload-area label{pointer-events: auto;position: relative;top:14px;}
+        .base64{padding: 12px;border: 1px solid #dcdcdc;box-sizing: border-box;}
+        .base64 textarea{width: 100%;border: none;resize: none;box-shadow: none;outline: none;padding: 0;}
+        .controls label, .controls button {margin-right: 6px;}
+    </style>
+</head>
+<body>
+<div class="warp">
+    <input type="file" id="fontFile" class="hidden"/>
+    <input type="file" id="filePathDialog" nwdirectory class="hidden"/>
+
+    <div id="alert" class="alert ">提示：非ttf格式的文件只能生成base64编码，ttf可生成woff,eot,svg格式的字体到输出目录</div>
+    <div id="dragUpload" class="item upload-area">
+        <div class="label-area"><i class="icon-plus"></i>将字体文件或图片拖拽到此区域，或者点击按钮上传</div>
+        <label class="btn " for="fontFile"><i class="icon-upload"></i> 上传文件 </label>
+        <p style="display:none">释放鼠标选中文件</p>
+    </div>
+    <div class="item base64">
+        <textarea name="base64code" id="base64Code" cols="30" rows="10" placeholder="字体文件的base64编码"></textarea>
+    </div>
+
+
+    <div class="item file-path input-append">
+        <p><i class="icon-folder-open"></i> 字体输出目录：
+            <script>document.write('<input id="dest" type="text" class="path span4" value="'+ process.cwd() +'" id="dest" style="width: 306px;">')</script>
+
+            <label for="filePathDialog" class="btn">修改</label>
+            <button class="btn btn-primary" disabled id="submit">生成其他格式字体</button>
+        </p>
+    </div>
+    <div class="item control-group">
+        <div class="controls">
+            <label class="checkbox">
+                <input type="checkbox" id="withCssBase64Code"> 包含css代码
+            </label>
+             <button class="btn" id="copyBase64Code">复制到剪贴板</button>
+             <button class="btn" id="clearBase64Code">清空</button>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
