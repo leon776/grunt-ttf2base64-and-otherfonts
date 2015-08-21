@@ -54,7 +54,8 @@ grunt.initConfig({
           src : ['test/less/ico.less']//要转换的css文件
       }],
       options: {
-          dest: 'test/font'//字体文件输出目录
+          dest: 'test/font',//字体文件输出目录
+          transfer2base64type: ['ttf', 'svg']//要生成base64字体的格式
       }
     }
   },
@@ -82,7 +83,8 @@ grunt.initConfig({
           src : ['test/less/ico.less']//要转换的css文件
       }],
       options: {
-          dest: 'test/font'//字体文件输出目录
+          dest: 'test/font'，//字体文件输出目录
+           transfer2base64type: ['ttf', 'svg']//要生成base64字体的格式
       }
     }
   },
